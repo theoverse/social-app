@@ -1,9 +1,11 @@
 const express = require('express')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')
 const app = express()
 
 let sessionOptions = session({
     secret: "JavaScript Secret",
+    store: MongoStore.create({mongoUrl:process.env.MONGO_URI}),
     resave: false,
     saveUninitialized: false,
     cookie: {maxAge: 1000 * 60 * 60 * 24, httpOnly: true}
