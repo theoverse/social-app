@@ -1,3 +1,4 @@
+const usersCollection = require('../db').collection('users')
 const validator = require("validator")
 
 let User = function(data) {
@@ -12,8 +13,8 @@ User.prototype.cleanUp = function() {
 
     // get rid of any bogus properties
     this.data = {
-        username: this.data.username.trim().tolowerCase,
-        email: this.data.email.trim().tolowerCase,
+        username: this.data.username.trim().toLowerCase(),
+        email: this.data.email.trim().toLowerCase(),
         password: this.data.password
     }
 }
@@ -25,7 +26,7 @@ User.prototype.validate = function() {
     if (this.data.password == "") {this.errors.push("You must provide a password.")}
     if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push("Password must be at least 12 characters.")}
     if (this.data.password.length > 20) {this.errors.push("Password cannot exceed 20 characters")}
-    if (this.data.username.length > 0 && this.data.username.length < 8) {this.errors.push("Username must be at least 8 characters.")}
+    if (this.data.username.length > 0 && this.data.username.length < 4) {this.errors.push("Username must be at least 8 characters.")}
     if (this.data.username.length > 10) {this.errors.push("Username cannot exceed 10 characters")}
 }
 
@@ -35,6 +36,9 @@ User.prototype.register = function() {
     this.validate()
 
     // step #2: if no validation issues, store user data into db
+    if (!this.errors.length) {
+        usersCollection.insertOne(this.data)
+    }
 }
 
 module.exports = User
